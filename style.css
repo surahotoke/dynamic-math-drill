@@ -1,0 +1,132 @@
+hr, ::column::scroll-marker {
+  all: initial;
+}
+hr {
+  display: list-item;
+  width: 20px;
+  aspect-ratio: 1;
+  columns: 1px;
+  column-gap: 0;
+  overflow: auto;
+  scroll-marker-group: after;
+  pointer-events: none;
+  animation: seed 1s linear infinite;
+  animation-play-state: paused;
+}
+hr:not(:hover):active {
+  animation-play-state: running;
+}
+hr::before {
+  position: absolute;
+  white-space: pre;
+  font-family: "Hiragino Sans", "BIZ UDPGothic", sans-serif;
+  content: "算数ドリル\Aつぎの　けいさんを　しましょう。";
+}
+hr::after {
+  content: '';
+  display: block;
+  height: 100%;
+}
+::scroll-marker-group {
+  margin-top: 2em;
+  width: 396px;
+  height: 560px;
+  display: grid;
+  grid-template: repeat(10, 1fr) / repeat(2, 1fr);
+  grid-auto-flow: column;
+  overflow: hidden;
+  outline: solid;
+  border-radius: 1px;
+}
+::column::scroll-marker {
+  --a: calc(1 + mod(--random(calc(3 * var(--sibling-index) - 2), var(--seed)), 99));
+  --operator: calc(1 + mod(--random(calc(3 * var(--sibling-index) - 1), var(--seed)), 4));
+  --b: calc(1 + mod(--random(calc(3 * var(--sibling-index)), var(--seed)), 99));
+  --answer: if(
+    style(--operator: 1): calc(var(--a) + var(--b));
+    style(--operator: 2): calc(var(--a) - var(--b));
+    style(--operator: 3): calc(var(--a) * var(--b));
+    else: round(down, var(--a) / var(--b)); 
+  );
+  --remainder: mod(var(--a), var(--b));
+  counter-reset: num var(--sibling-index) a var(--a) operator var(--operator) b var(--b) answer var(--answer) remainder var(--remainder);
+  --remainder-content: if(
+    style((--operator: 4) and (not (--remainder: 0))): '･･･' counter(remainder);
+    else: '';
+  );
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 15px;
+  content: '(' counter(num) ') ' counter(a) ' ' counter(operator, operator) ' ' counter(b) ' = ' counter(answer) var(--remainder-content);
+  animation: linear reverse;
+  animation-name: col, row;
+  animation-timeline: view(x), view(y);
+  animation-range: cover contain;
+  --sibling-index: calc(1 + 10 * var(--col) + var(--row));
+  padding: 5px;
+  --answer-left: calc(9ch + 1ch * (--len(var(--sibling-index)) + --len(var(--a)) + --len(var(--b))));
+  background: linear-gradient(to right, white var(--answer-left), var(--mask) 0);
+  transition: --mask 0.5s, filter 0.1s;
+  display: flex;
+  align-items: center;
+}
+::column::scroll-marker:hover{
+  filter: brightness(0.8);
+}
+::column::scroll-marker:not(:hover):active {
+  --mask: #0000;
+}
+@counter-style operator {
+  system: cyclic;
+  symbols: '+' '-' '×' '÷';
+}
+@keyframes col {
+  to {
+    --col: 1;
+  }
+}
+@keyframes row {
+  to {
+    --row: 10;
+  }
+}
+@keyframes seed {
+  to {
+    --seed: 1;
+  }
+}
+@property --col {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --row {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --seed {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --operator {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --remainder {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+@property --mask {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #000e;
+}
+@function --random(--num <integer>, --seed <number>) returns <integer> {
+  result: round(mod(524287 * sin(999983 * (var(--num) + 5007)) * (91 + 29 * cos(524287 * var(--seed))), 8191));
+}
+@function --len(--num <number>) returns <integer> {
+  result: calc(1 + round(down, log(var(--num), 10)));
+}
