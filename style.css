@@ -17,7 +17,11 @@ hr::before {
   position: absolute;
   white-space: pre;
   font-family: "Hiragino Sans", "BIZ UDPGothic", sans-serif;
-  content: "算数ドリル\Aつぎの　けいさんを　しましょう。";
+  content:
+"算数ドリル\A
+つぎの　けいさんを　しましょう。\A
+1. 答えを見たい問題をクリックし、そのままドラッグして別の問題にマウスを動かすと答えが表示されます。\A
+2. 算数ドリル内をクリックし、そのままドラッグして算数ドリル外にマウスを動かすと全問題が更新されます。";
 }
 hr::after {
   content: '';
@@ -25,7 +29,7 @@ hr::after {
   height: 100%;
 }
 ::scroll-marker-group {
-  margin-top: 2em;
+  margin-top: 5.5em;
   width: 396px;
   height: 560px;
   display: grid;
