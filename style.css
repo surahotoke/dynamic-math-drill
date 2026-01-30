@@ -13,9 +13,6 @@ hr {
   animation: seed 1s linear infinite;
   animation-play-state: paused;
 }
-hr:not(:hover):active {
-  animation-play-state: running;
-}
 hr::before {
   position: absolute;
   white-space: pre;
@@ -69,11 +66,27 @@ hr::after {
   display: flex;
   align-items: center;
 }
-::column::scroll-marker:hover{
+::column::scroll-marker:hover {
   filter: brightness(0.8);
 }
+hr:not(:hover):active {
+  animation-play-state: running;
+}
 ::column::scroll-marker:not(:hover):active {
-  --mask: #0000;
+  --mask: white;
+}
+/* スマホ用 */
+@media (hover: none) {
+  :active:not(:has(:active)) hr {
+    animation-play-state: running;
+  }
+  ::column::scroll-marker:hover {
+    filter: none;
+    --mask: white;
+  }
+  ::column::scroll-marker:active {
+    filter: brightness(0.8);
+  }
 }
 @counter-style operator {
   system: cyclic;
